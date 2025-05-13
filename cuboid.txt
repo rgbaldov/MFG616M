@@ -1,0 +1,32 @@
+function sysCall_init()
+    cuboidHandle = sim.getObjectHandle('MovingCuboid')
+    stepSize = 0.01
+    edgeLength = 0.4
+    directionIndex = 1
+    movedDistance = 0
+    directions = {
+        {1, 0, 0},   -- move +X
+        {0, 1, 0},   -- move +Y
+        {-1, 0, 0},  -- move -X
+        {0, -1, 0}   -- move -Y
+    }
+end
+
+function sysCall_actuation()
+    local pos = sim.getObjectPosition(cuboidHandle, -1)
+    local dir = directions[directionIndex]
+    
+    -- Move along the current direction
+    pos[1] = pos[1] + dir[1] * stepSize
+    pos[2] = pos[2] + dir[2] * stepSize
+    sim.setObjectPosition(cuboidHandle, -1, pos)
+    
+    movedDistance = movedDistance + stepSize
+    if movedDistance >= edgeLength then
+        movedDistance = 0
+        directionIndex = directionIndex + 1
+        if directionIndex > 4 then
+            directionIndex = 1
+        end
+    end
+end
